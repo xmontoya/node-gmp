@@ -20,7 +20,7 @@ router.post('/user',
             password: req.body.password,
             age: req.body.age
         };
-        res.json(usersModel.saveUser(user));
+        res.status(201).json(usersModel.saveUser(user));
     });
 
 router.put('/user/:id', userValidator.validateUser, (req, res) => {
@@ -31,7 +31,7 @@ router.put('/user/:id', userValidator.validateUser, (req, res) => {
 });
 
 router.get('/user/:id', userValidator.validateUser, (req, res) => {
-    res.json(req.user);
+    res.status(200).json(req.user);
 });
 
 router.get('/users',
@@ -40,7 +40,7 @@ router.get('/users',
         next();
     },
     (req, res) => {
-        res.json(req.users);
+        res.status(200).json(req.users);
     });
 
 router.delete('/user/:id', userValidator.validateUser, (req, res) => {
