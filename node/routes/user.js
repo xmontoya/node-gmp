@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import uuidv1 from 'uuid/v1';
 
 import usersModel from '../models/user';
 import userValidator from '../middlewares/user-validator';
@@ -12,29 +11,43 @@ router.use((req, res, next) => {
     next();
 });
 
-router.post('/user', (req, res) => {
-    usersModel.saveUser({ id: uuidv1() });
-    res.json(usersModel.getAutoSuggestUsers());
-});
+router.post('/user',
+    userValidator.validateBodyParams,
+    userValidator.validateLogin,
+    (req, res) => {
+        const user = {
+            login: req.body.login,
+            password: req.body.password,
+            age: req.body.age
+        };
+        res.json(usersModel.saveUser(user));
+    });
 
 router.put('/user/:id', userValidator.validateUser, (req, res) => {
-    usersModel.saveUser({ id: uuidv1() });
-    res.json(usersModel.getAutoSuggestUsers());
+    const user = {
+        age: req.body.age ? req.body.age : req.user.age
+    };
+    res.json(usersModel.updateUser(req.params.id, user));
 });
 
 router.get('/user/:id', userValidator.validateUser, (req, res) => {
     res.json(req.user);
 });
 
-router.get('/users', (req, res) => {
-    res.json(usersModel.getAutoSuggestUsers());
-});
+router.get('/users',
+    (req, res, next) => {
+        req.users = usersModel.getAutoSuggestUsers(req.query.loginSubstring, req.query.limit);
+        next();
+    },
+    (req, res) => {
+        res.json(req.users);
+    });
 
 router.delete('/user/:id', userValidator.validateUser, (req, res) => {
-    if(!usersModel.deleteUser(req.params.id)){
-        res.status(500).json({ status: 500, message: 'something went wrong!' });
+    if (!usersModel.deleteUser(req.params.id)) {
+        res.status(500).send('something went wrong!');
     }
-    res.status(200).json({ status: 200, message: 'user deleted.' });
+    res.status(200).send('user deleted.');
 });
 
 module.exports = router;
