@@ -8,16 +8,29 @@ NodeJS Global Mentoring Program
 2. npm run start
 
 ## COMMANDS
-1. npm run eslint
+Run eslint
+```
+npm run eslint
+```
+
+Run db migrations
+```
+./node_modules/.bin/sequelize  db:migrate
+```
+
+Run db seeders
+```
+./node_modules/.bin/sequelize  db:seed:all
+```
 
 ### User model
 
 ```
 {
-    id: uuid/v1,
+    id: integer,
     login: string,
     password: string,
-    age: number,
+    age: integer,
     isDeleted: boolean
 },
 ```
@@ -33,20 +46,20 @@ NodeJS Global Mentoring Program
 
 This endpoint use for create user.
 
-| Name       | Required |  Type  | Location 
-| ----------:|:--------:|:-------|:------
-| `login`    | required | string | body                              
-| `password` | required | string | body                              
-| `age`      | required | number | body
+| Name       | Required |  Type   | Location 
+| ----------:|:--------:|:--------|:------
+| `login`    | required | string  | body                              
+| `password` | required | string  | body                              
+| `age`      | required | integer | body
 
 **Response**
 
 ```
 {
-    id: uuid,
+    id: integer,
     login: string,
     password: string,
-    age: number
+    age: integer
 }
 ```
 ___
@@ -55,20 +68,15 @@ ___
 
 This endpoint use for change appropriate user.
 
-| Name  | Required |  Type  | Location
-| ----: |:--------:|:-------|:------
-| `id`  | required | uuid   | url                                    
-| `age` | required | number | body       
+| Name  | Required |  Type   | Location
+| ----: |:--------:|:--------|:------
+| `id`  | required | integer | url                                    
+| `age` | required | integer | body       
 
 **Response**
 
 ```
-{
-    id: uuid,
-    login: string,
-    password: string,
-    age: number
-}
+Status code: 204
 ```
 ___
 
@@ -88,16 +96,16 @@ This endpoint use for getting available users, filtered by login.
 ```
 [
     {
-        id: uuid,
+        id: integer,
         login: string,
         password: string,
-        length: number
+        age: integer
     },
     {
-        id: uuid,
+        id: integer,
         login: string,
         password: string,
-        length: number
+        age: integer
     },
 ]
 ```
@@ -107,18 +115,18 @@ ___
 
 This endpoint use for getting user by id.
 
-| Name  | Required |  Type  | Location
-| ----: |:--------:|:-------|:------
-| `id`  | required | uuid   | url            
+| Name  | Required |  Type   | Location
+| ----: |:--------:|:--------|:------
+| `id`  | required | integer | url            
 
 **Response**
 
 ```
 {
-    id: uuid,
+    id: integer,
     login: string,
     password: string,
-    age: number
+    age: integer
 }
 ```
 ___
@@ -127,9 +135,9 @@ ___
 
 This endpoint use for deleting user.
 
-| Name  | Required |  Type  | Location
-| ----: |:--------:|:-------|:------
-| `id`  | required | uuid   | url            
+| Name  | Required |  Type   | Location
+| ----: |:--------:|:--------|:------
+| `id`  | required | integer | url            
 
 **Response**
 
