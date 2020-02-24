@@ -17,8 +17,5 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: false
         }
     }, {});
-    User.associate = (models) => { // eslint-disable-line
-        // associations can be defined here
-    };
     return User;
 };

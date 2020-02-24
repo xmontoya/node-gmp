@@ -1,4 +1,4 @@
-import { User } from '../models';
+import { User, Group } from '../models';
 import { Op } from 'sequelize';
 
 module.exports = {
@@ -8,7 +8,8 @@ module.exports = {
             order: [['login', 'ASC']],
             where: {
                 isDeleted: { [Op.not]: true }
-            }
+            },
+            include: Group
         };
 
         if (req.query.loginSubstring) {
