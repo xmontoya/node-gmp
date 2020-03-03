@@ -1,5 +1,7 @@
-import { User, Group } from '../models';
+import { User } from '../models';
 import { Op } from 'sequelize';
+
+import { logResponse } from '../utils/logger';
 
 module.exports = {
     getAutoSuggestUsers(req, res) {
@@ -9,7 +11,7 @@ module.exports = {
             where: {
                 isDeleted: { [Op.not]: true }
             },
-            include: Group
+            raw : true
         };
 
         if (req.query.loginSubstring) {
@@ -22,8 +24,14 @@ module.exports = {
 
         return User
             .findAll(query)
-            .then(users => res.status(200).send(users))
-            .catch(error => res.status(400).send(error));
+            .then(users => {
+                logResponse(200, users);
+                return res.status(200).send(users);
+            })
+            .catch(error => {
+                logResponse(400, error);
+                return res.status(400).send(error);
+            });
     },
     getUser(req, res) {
         const query = {
@@ -32,19 +40,25 @@ module.exports = {
                 id: req.params.id,
                 isDeleted: { [Op.not]: true }
             },
-            limit: 1
+            limit: 1,
+            raw : true
         };
 
         return User
             .findAll(query)
             .then(users => {
                 if (users.length >= 1) {
+                    logResponse(200, users);
                     return res.status(200).send(users[0]);
                 }
-
-                return res.status(404).send('user not found.');
+                const message = 'user not found.';
+                logResponse(404, message);
+                return res.status(404).send(message);
             })
-            .catch(error => res.status(400).send(error));
+            .catch(error => {
+                logResponse(400, error);
+                return res.status(400).send(error);
+            });
     },
     create(req, res) {
         const query = {
@@ -55,8 +69,14 @@ module.exports = {
 
         return User
             .create(query)
-            .then(user => res.status(201).send(user))
-            .catch(error => res.status(400).send(error));
+            .then(user => {
+                logResponse(201, user.get({ plain:true }));
+                return res.status(201).send(user);
+            })
+            .catch(error => {
+                logResponse(400, error);
+                return res.status(400).send(error);
+            });
     },
     update(req, res) {
         const user = {
@@ -68,8 +88,14 @@ module.exports = {
 
         return User
             .update(user, { where })
-            .then(() => res.status(204).send())
-            .catch(error => res.status(400).send(error));
+            .then(() => {
+                logResponse(204, '');
+                return res.status(200).send();
+            })
+            .catch(error => {
+                logResponse(400, error);
+                return res.status(400).send(error);
+            });
     },
     delete(req, res) {
         const user = {
@@ -82,7 +108,13 @@ module.exports = {
 
         return User
             .update(user, { where })
-            .then(() => res.status(204).send())
-            .catch(error => res.status(400).send(error));
+            .then(() => {
+                logResponse(204, '');
+                return res.status(204).send();
+            })
+            .catch(error => {
+                logResponse(400, error);
+                return res.status(400).send(error);
+            });
     }
 };
