@@ -5,12 +5,6 @@ import userValidator from '../middlewares/user-validator';
 
 const router = Router();
 
-router.use((req, res, next) => {
-    console.log('Request URL: ', req.originalUrl);
-    console.log('Time: ', Date.now());
-    next();
-});
-
 router.post('/user',
     userValidator.validateBodyParams,
     userValidator.validateLogin,

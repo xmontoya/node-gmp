@@ -1,8 +1,24 @@
 const http = require('http');
-const app = require('../app'); // The express app we just created
+const { logger } = require('../utils/logger');
+const app = require('../app');
+
+process.on('uncaughtException', err => {
+    logger.log({
+        message: 'UNCAUGHT EXCEPTION', 
+        level: 'error',
+        error: err
+    });
+});
 
 const port = 3000;
 app.set('port', port);
 
 const server = http.createServer(app);
+
+server.on('error', err => {
+    logger.error({
+        error: err
+    });
+});
+
 server.listen(port, () => console.log(`Node GMP listening on port ${port}!`));

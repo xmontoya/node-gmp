@@ -4,12 +4,6 @@ import { groups } from '../services';
 
 const router = Router();
 
-router.use((req, res, next) => {
-    console.log('Request URL: ', req.originalUrl);
-    console.log('Time: ', Date.now());
-    next();
-});
-
 router.post('/group', groups.create);
 
 router.put('/group/:id', groups.update);
