@@ -1,9 +1,12 @@
 import { Router } from 'express';
 
 import { users } from '../services';
+import authorization from '../middlewares/authorization';
 import userValidator from '../middlewares/user-validator';
 
 const router = Router();
+
+router.use(authorization.authenticate);
 
 router.post('/user',
     userValidator.validateBodyParams,
