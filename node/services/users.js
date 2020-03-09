@@ -60,6 +60,35 @@ module.exports = {
                 return res.status(400).send(error);
             });
     },
+    getUserByLogin(req, res, next) {
+        const query = {
+            attributes: { exclude: ['password', 'isDeleted'] },
+            where: {
+                login: req.body.login,
+                password: req.body.password,
+                isDeleted: { [Op.not]: true }
+            },
+            limit: 1,
+            raw : true
+        };
+
+        return User
+            .findAll(query)
+            .then(users => {
+                if (users.length >= 1) {
+                    req.user = users[0];
+                    return next();
+                }
+
+                const message = 'Invalid user name or password.';
+                logResponse(400, message);
+                return res.status(400).send(message);
+            })
+            .catch(error => {
+                logResponse(400, error);
+                return res.status(400).send(error);
+            });
+    },
     create(req, res) {
         const query = {
             login: req.body.login,

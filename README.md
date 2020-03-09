@@ -61,6 +61,10 @@ UserGroup
 
 ### Endpoints
 
+## Login Endpoints
+
+`POST` [/login](#post-login) <br/>
+
 ## User Endpoints
 
 `POST` [/user](#post-user) <br/>
@@ -82,15 +86,36 @@ UserGroup
 `POST` [/user-group](#post-user-group) <br/>
 `DELETE` [/user-group/:user_id/:group_id](#delete-user-group) <br/>
 
-#### POST /user
+#### POST /login
 
-This endpoint use for create user.
+This endpoint use for login users via jwt.
 
 | Name       | Required |  Type   | Location 
 | ----------:|:--------:|:--------|:------
 | `login`    | required | string  | body                              
 | `password` | required | string  | body                              
-| `age`      | required | integer | body
+
+**Response**
+
+```
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6N..."
+}
+```
+___
+
+#### POST /user
+
+This endpoint use for create user.
+
+**Parameters**
+
+| Name            | Required |  Type   | Location 
+| ---------------:|:--------:|:--------|:------
+| `Authorization` | required | token   | header  
+| `login`         | required | string  | body                              
+| `password`      | required | string  | body                              
+| `age`           | required | integer | body
 
 **Response**
 
@@ -110,10 +135,13 @@ ___
 
 This endpoint use for change appropriate user.
 
-| Name  | Required |  Type   | Location
-| ----: |:--------:|:--------|:------
-| `id`  | required | integer | url                                    
-| `age` | required | integer | body       
+**Parameters**
+
+| Name            | Required |  Type   | Location
+| ---------------:|:--------:|:--------|:------
+| `Authorization` | required | token   | header  
+| `id`            | required | integer | url                                    
+| `age`           | required | integer | body       
 
 **Response**
 
@@ -129,7 +157,8 @@ This endpoint use for getting available users, filtered by login.
 **Parameters**
 
 | Name             | Required     | Type    | Location               
-| ----------------:|:------------:|:-------:|:-------- 
+| ----------------:|:--------:|:--------|:------
+| `Authorization`  | required | token   | header  
 | `loginSubstring` | non-required | string  | query
 | `limit`          | non-required | string  | query          
 
@@ -161,9 +190,12 @@ ___
 
 This endpoint use for getting user by id.
 
-| Name  | Required |  Type   | Location
-| ----: |:--------:|:--------|:------
-| `id`  | required | integer | url            
+**Parameters**
+
+| Name            | Required |  Type   | Location
+| ---------------:|:--------:|:--------|:------
+| `Authorization` | required | token   | header  
+| `id`            | required | integer | url            
 
 **Response**
 
@@ -183,9 +215,12 @@ ___
 
 This endpoint use for deleting user.
 
-| Name  | Required |  Type   | Location
-| ----: |:--------:|:--------|:------
-| `id`  | required | integer | url            
+**Parameters**
+
+| Name            | Required |  Type   | Location
+| ---------------:|:--------:|:--------|:------
+| `Authorization` | required | token   | header  
+| `id`            | required | integer | url            
 
 **Response**
 
@@ -198,10 +233,13 @@ ___
 
 This endpoint use for create a group.
 
-| Name          | Required |  Type   | Location 
-| :-------------| :--------|:--------|:------
-| `name`        | required | string  | body                              
-| `permissions` | required | array   | body                              
+**Parameters**
+
+| Name            | Required |  Type   | Location 
+| ---------------:|:--------:|:--------|:------
+| `Authorization` | required | token   | header  
+| `name`          | required | string  | body                              
+| `permissions`   | required | array   | body                              
 
 **Response**
 
@@ -219,11 +257,14 @@ ___
 
 This endpoint use for change appropriate user.
 
-| Name          | Required |  Type   | Location
-| :-------------|:---------|:--------|:------
-| `id`          | required | integer | url                                    
-| `name`        | required | string  | body
-| `permissions` | required | array   | body       
+**Parameters**
+
+| Name            | Required |  Type   | Location
+| ---------------:|:--------:|:--------|:------
+| `Authorization` | required | token   | header  
+| `id`            | required | integer | url                                    
+| `name`          | required | string  | body
+| `permissions`   | required | array   | body       
 
 **Response**
 
@@ -236,7 +277,11 @@ ___
 
 This endpoint use for getting available groups.
 
-**Parameters**      
+**Parameters**
+
+| Name            | Required |  Type   | Location
+| ---------------:|:--------:|:--------|:------
+| `Authorization` | required | token   | header  
 
 **Response**
 
@@ -257,9 +302,12 @@ ___
 
 This endpoint use for getting a group by id.
 
-| Name  | Required |  Type   | Location
-| ----: |:--------:|:--------|:------
-| `id`  | required | integer | url            
+**Parameters**
+
+| Name            | Required |  Type   | Location
+| ---------------:|:--------:|:--------|:------
+| `Authorization` | required | token   | header  
+| `id`            | required | integer | url            
 
 **Response**
 
@@ -278,9 +326,12 @@ ___
 
 This endpoint use for deleting a group.
 
-| Name  | Required |  Type   | Location
-| ----: |:--------:|:--------|:------
-| `id`  | required | integer | url            
+**Parameters**
+
+| Name            | Required |  Type   | Location
+| ---------------:|:--------:|:--------|:------
+| `Authorization` | required | token   | header  
+| `id`            | required | integer | url            
 
 **Response**
 
@@ -293,10 +344,13 @@ ___
 
 This endpoint use for assign a user to a group.
 
-| Name       | Required |  Type   | Location
-| :----------|:---------|:--------|:------
-| `group_id` | required | integer | body
-| `users`    | required | array   | body            
+**Parameters**
+
+| Name            | Required |  Type   | Location
+| ---------------:|:--------:|:--------|:------
+| `Authorization` | required | token   | header  
+| `group_id`      | required | integer | body
+| `users`         | required | array   | body            
 
 **Response**
 
@@ -314,10 +368,13 @@ ___
 
 This endpoint use for remove users to groups.
 
-| Name       | Required |  Type   | Location
-| :--------- |:---------|:--------|:------
-| `user_id`  | required | integer | url
-| `group_id` | required | integer | url            
+**Parameters**
+
+| Name            | Required |  Type   | Location
+| ---------------:|:--------:|:--------|:------
+| `Authorization` | required | token   | header  
+| `user_id`       | required | integer | url
+| `group_id`      | required | integer | url            
 
 **Response**
 

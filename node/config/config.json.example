@@ -1,32 +1,47 @@
 {
   "development": {
-    "username": "",
-    "password": "",
-    "database": "",
-    "host": "",
-    "dialect": "postgres",
-    "port": 5432,
-    "ssl":true,
-    "dialectOptions":{
-        "ssl":{
-          "require":true
-        }
+    "db": {
+      "username": "",
+      "password": "",
+      "database": "",
+      "host": "",
+      "dialect": "postgres",
+      "port": 5432,
+      "ssl":true,
+      "dialectOptions":{
+          "ssl":{
+            "require":true
+          }
+      }
+    },
+    "auth": {
+      "key": ""
     }
   },
   "test": {
-    "username": "root",
-    "password": null,
-    "database": "database_test",
-    "host": "127.0.0.1",
-    "dialect": "mysql",
-    "operatorsAliases": false
+    "db": {
+      "username": "root",
+      "password": null,
+      "database": "database_test",
+      "host": "127.0.0.1",
+      "dialect": "mysql",
+      "operatorsAliases": false
+    } ,
+    "auth": {
+      "key": ""
+    }
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
-    "dialect": "mysql",
-    "operatorsAliases": false
+    "db": {
+      "username": "root",
+      "password": null,
+      "database": "database_production",
+      "host": "127.0.0.1",
+      "dialect": "mysql",
+      "operatorsAliases": false
+    },
+    "auth": {
+      "key": ""
+    }
   }
 }
