@@ -1,10 +1,8 @@
 import { User } from '../models';
 import { Op } from 'sequelize';
 
-import { logResponse } from '../utils/logger';
-
-module.exports = {
-    getAutoSuggestUsers(req, res) {
+const getAutoSuggestUsers = async (loginSubstring = null, limit = null) => {
+    try {
         const query = {
             attributes: { exclude: ['password', 'isDeleted'] },
             order: [['login', 'ASC']],
@@ -14,136 +12,126 @@ module.exports = {
             raw : true
         };
 
-        if (req.query.loginSubstring) {
-            query.where.login = { [Op.substring]: req.query.loginSubstring };
+        if (loginSubstring) {
+            query.where.login = { [Op.substring]: loginSubstring };
         }
 
-        if (req.query.limit) {
-            query.limit = req.query.limit;
+        if (limit) {
+            query.limit = limit;
         }
 
-        return User
-            .findAll(query)
-            .then(users => {
-                logResponse(200, users);
-                return res.status(200).send(users);
-            })
-            .catch(error => {
-                logResponse(400, error);
-                return res.status(400).send(error);
-            });
-    },
-    getUser(req, res) {
+        const users = await User.findAll(query);
+
+        return users;
+    } catch (e) {
+        return new Error(e);
+    }
+};
+const getUserByLogin = async (login) => {
+    try {
+        const query = {
+            attributes: { exclude: ['password', 'isDeleted'] },
+            where: { login },
+            limit: 1,
+            raw : true
+        };
+
+        const users = await User.findAll(query);
+
+        return users;
+    } catch (e) {
+        return new Error(e);
+    }
+};
+
+const getUser = async (userId) => {
+    try {
         const query = {
             attributes: { exclude: ['password', 'isDeleted'] },
             where: {
-                id: req.params.id,
+                id: userId,
                 isDeleted: { [Op.not]: true }
             },
             limit: 1,
             raw : true
         };
 
-        return User
-            .findAll(query)
-            .then(users => {
-                if (users.length >= 1) {
-                    logResponse(200, users);
-                    return res.status(200).send(users[0]);
-                }
-                const message = 'user not found.';
-                logResponse(404, message);
-                return res.status(404).send(message);
-            })
-            .catch(error => {
-                logResponse(400, error);
-                return res.status(400).send(error);
-            });
-    },
-    getUserByLogin(req, res, next) {
+        const users = await User.findAll(query);
+
+        return users;
+    } catch (e) {
+        return new Error(e);
+    }
+};
+
+const getUserByLoginPass = async (login, password) => {
+    try {
         const query = {
             attributes: { exclude: ['password', 'isDeleted'] },
             where: {
-                login: req.body.login,
-                password: req.body.password,
+                login,
+                password,
                 isDeleted: { [Op.not]: true }
             },
             limit: 1,
             raw : true
         };
 
-        return User
-            .findAll(query)
-            .then(users => {
-                if (users.length >= 1) {
-                    req.user = users[0];
-                    return next();
-                }
+        const users = await User.findAll(query);
 
-                const message = 'Invalid user name or password.';
-                logResponse(400, message);
-                return res.status(400).send(message);
-            })
-            .catch(error => {
-                logResponse(400, error);
-                return res.status(400).send(error);
-            });
-    },
-    create(req, res) {
-        const query = {
-            login: req.body.login,
-            password: req.body.password,
-            age: req.body.age
-        };
+        return users;
+    } catch (e) {
+        return new Error(e);
+    }
+};
 
-        return User
-            .create(query)
-            .then(user => {
-                logResponse(201, user.get({ plain:true }));
-                return res.status(201).send(user);
-            })
-            .catch(error => {
-                logResponse(400, error);
-                return res.status(400).send(error);
-            });
-    },
-    update(req, res) {
-        const user = {
-            age: req.body.age
-        };
+const createUser = async (userObj) => {
+    try {
+        const user = await User.create(userObj);
+
+        return user;
+    } catch (e) {
+        return new Error(e);
+    }
+};
+
+const updateUser = async (userId, age) => {
+    try {
+        const user = { age };
         const where = {
-            id: req.params.id
+            id: userId
         };
+        const result = await User.update(user, { where });
 
-        return User
-            .update(user, { where })
-            .then(() => {
-                logResponse(204, '');
-                return res.status(200).send();
-            })
-            .catch(error => {
-                logResponse(400, error);
-                return res.status(400).send(error);
-            });
-    },
-    delete(req, res) {
+        return result;
+    } catch (e) {
+        return new Error(e);
+    }
+};
+
+const deleteUser = async (userId) => {
+    try {
         const user = {
             isDeleted: true
         };
         const where = {
-            id: req.params.id,
+            id: userId,
             isDeleted: false
         };
+        const result = await User.update(user, { where });
 
-        return User
-            .update(user, { where })
-            .then(() => {
-                logResponse(204, '');
-                return res.status(204).send();
-            })
-            .catch(error => {
-                logResponse(400, error);
-                return res.status(400).send(error);
-            });
+        return result;
+    } catch (e) {
+        return new Error(e);
     }
+};
+
+module.exports = {
+    getAutoSuggestUsers,
+    getUser,
+    getUserByLogin,
+    getUserByLoginPass,
+    createUser,
+    updateUser,
+    deleteUser
 };

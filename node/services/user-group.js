@@ -1,11 +1,7 @@
 import { UserGroup } from '../models';
 
-import { logResponse } from '../utils/logger';
-
-module.exports = {
-    addUsersToGroup(req, res) {
-        const groupId = req.body.group_id;
-        const users = req.body.users;
+const addUsersToGroup = async (groupId, users) => {
+    try {
         const groupUsers = users.map(userId => {
             return {
                 UserId: userId,
@@ -13,32 +9,26 @@ module.exports = {
             };
         });
 
-        return UserGroup
-            .bulkCreate(groupUsers)
-            .then(result => {
-                logResponse(201, result.length);
-                return res.status(201).send(result);
-            })
-            .catch(error => {
-                logResponse(400, error);
-                res.status(400).send(error);
-            });
-    },
-    removeGroup(req, res) {
+        return await UserGroup.bulkCreate(groupUsers);
+    } catch (e) {
+        return new Error(e);
+    }
+};
+
+const removeGroup = async (UserId, GroupId) => {
+    try {
         const where = {
-            UserId: req.params.user_id,
-            GroupId: req.params.group_id
+            UserId,
+            GroupId
         };
 
-        return UserGroup
-            .destroy({ where })
-            .then(() => {
-                logResponse(204, '');
-                return res.status(204).send();
-            })
-            .catch(error => {
-                logResponse(400, error);
-                return res.status(400).send(error);
-            });
+        return await UserGroup.destroy({ where });
+    } catch (e) {
+        return new Error(e);
     }
+};
+
+module.exports = {
+    addUsersToGroup,
+    removeGroup
 };

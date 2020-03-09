@@ -1,13 +1,13 @@
+import config from 'config';
 import fs from 'fs';
 import path from 'path';
 import Sequelize from 'sequelize';
 
 const basename = path.basename(module.filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require(`${__dirname}/../config/config.json`)[env].db;
+const configDB = config.db;
 const db = {};
 
-const sequelize = new Sequelize(`postgres://${config.username}:${config.password}@${config.host}:${config.port}/${config.database}?ssl=true`);
+const sequelize = new Sequelize(`postgres://${configDB.username}:${configDB.password}@${configDB.host}:${configDB.port}/${configDB.database}?ssl=true`);
 
 fs.readdirSync(__dirname)
     .filter(file =>

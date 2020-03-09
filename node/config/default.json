@@ -1,0 +1,19 @@
+{
+    "db": {
+        "username": "",
+        "password": "",
+        "database": "",
+        "host": "",
+        "dialect": "postgres",
+        "port": 5432,
+        "ssl":true,
+        "dialectOptions":{
+            "ssl":{
+            "require":true
+            }
+        }
+    },
+    "auth": {
+        "key": ""
+    }
+}

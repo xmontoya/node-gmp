@@ -1,3 +1,4 @@
 /node/node_modules
 /node/package-lock.json
-/node/config/config.json
+/node/config/development.json
+/node/config/production.json
