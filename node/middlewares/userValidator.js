@@ -1,8 +1,9 @@
 import Joi from '@hapi/joi';
 import joiValidator from 'express-joi-validation';
 
-import { User } from '../models';
-import { Op } from 'sequelize';
+import { users } from '../services';
+
+import { logResponse } from '../utils/logger';
 
 const validator = joiValidator.createValidator({});
 
@@ -17,24 +18,20 @@ const userUpdateSchema = Joi.object({
 });
 
 const userValidator = {
-    validateLogin: (req, res, next) => {
-        const query = {
-            where: {
-                login: req.body.login,
-                isDeleted: { [Op.not]: false }
-            },
-            limit: 1
-        };
+    validateLogin: async (req, res, next) => {
+        try {
+            const user = await users.getUserByLogin(req.body.login);
 
-        return User
-            .findAll(query)
-            .then(users => {
-                if (users.length >= 1) {
-                    return res.status(400).send('login already exists.');
-                }
-                next();
-            })
-            .catch(error => res.status(400).send(error));
+            if (user.length >= 1) {
+                const logMessage = 'login already exists.';
+                logResponse(400, logMessage);
+                return res.status(400).send(logMessage);
+            }
+
+            return next();
+        } catch (e) {
+            return next(e);
+        }
     },
     validateBodyParams: validator.body(userCreateSchema),
     validateUpdateParams: validator.body(userUpdateSchema)

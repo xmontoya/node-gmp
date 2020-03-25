@@ -4,10 +4,18 @@ NodeJS Global Mentoring Program
 
 ### START
 
-1. npm install
-2. npm run start
+1. Execute npm install
+2. Go to node/config
+3. Create a new file development.json based on default.json
+4. Set you db credentials and auth key
+5. Execute npm run dev
 
 ### COMMANDS
+Run unit tests
+```
+npm run test
+```
+
 Run eslint
 ```
 npm run eslint
